@@ -1,0 +1,88 @@
+body {
+    font-family: sans-serif;
+    margin: 20px;
+}
+
+.config-container {
+    margin-bottom: 15px;
+}
+
+.main-container {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.signals-container {
+    width: 350px;
+    margin-right: 20px;
+}
+
+#signal-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.signal-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    height: 40px;
+    /* Match canvas signal height */
+}
+
+.signal-item input[type="text"] {
+    width: 100px;
+    margin-right: 5px;
+}
+
+.signal-item .clk-freq-input {
+    width: 60px;
+    margin-left: 5px;
+}
+
+.signal-item label {
+    margin-right: 5px;
+}
+
+.signal-item input[type="number"] {
+    width: 50px;
+}
+
+.chart-container {
+    overflow-x: auto;
+    flex-grow: 1;
+    /* Keep it for cases where canvas is smaller than container */
+}
+
+#timing-chart-canvas {
+    border: 1px solid #000;
+    cursor: crosshair;
+}
+
+#time-axis-canvas {
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+    border-bottom: 1px solid #000;
+}
+
+.controls-container {
+    margin-bottom: 20px;
+}
+
+.output-container {
+    display: flex;
+    gap: 20px;
+}
+
+.output-box {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+textarea {
+    width: 100%;
+    height: 200px;
+    box-sizing: border-box;
+}
