@@ -1,15 +1,19 @@
+/* General Styles */
 body {
     font-family: sans-serif;
     margin: 20px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-.config-container {
+.config-container,
+.main-container,
+.controls-container,
+.output-container {
     margin-bottom: 15px;
 }
 
 .main-container {
     display: flex;
-    margin-bottom: 20px;
 }
 
 .signals-container {
@@ -20,7 +24,6 @@ body {
 #signal-list {
     list-style: none;
     padding: 0;
-    margin-bottom: 10px;
 }
 
 .signal-item {
@@ -28,16 +31,22 @@ body {
     align-items: center;
     margin-bottom: 5px;
     height: 40px;
-    /* Match canvas signal height */
+}
+
+.signal-item input,
+.signal-item select {
+    margin-right: 5px;
 }
 
 .signal-item input[type="text"] {
-    width: 100px;
+    width: 80px;
+    /* Adjusted width */
     margin-right: 5px;
 }
 
 .signal-item .clk-freq-input {
-    width: 60px;
+    width: 50px;
+    /* Adjusted width */
     margin-left: 5px;
 }
 
@@ -51,28 +60,28 @@ body {
 
 .chart-container {
     overflow-x: auto;
-    flex-grow: 1;
-    /* Keep it for cases where canvas is smaller than container */
+    /* flex-grow: 1; */
+    /* Removed to prevent interference with fixed signal list width */
+}
+
+#timing-chart-canvas,
+#time-axis-canvas {
+    border: 1px solid #000;
 }
 
 #timing-chart-canvas {
-    border: 1px solid #000;
     cursor: crosshair;
 }
 
-#time-axis-canvas {
-    border-left: 1px solid #000;
-    border-right: 1px solid #000;
-    border-bottom: 1px solid #000;
-}
-
-.controls-container {
-    margin-bottom: 20px;
-}
-
-.output-container {
+.output-header {
     display: flex;
-    gap: 20px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.output-header h2 {
+    margin: 0;
 }
 
 .output-box {
@@ -81,8 +90,83 @@ body {
     flex-direction: column;
 }
 
+.output-container {
+    display: flex;
+    gap: 20px;
+}
+
 textarea {
     width: 100%;
     height: 200px;
     box-sizing: border-box;
+}
+
+/* Theme Switcher Button */
+#theme-switcher {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 24px;
+    padding: 10px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background-color: white;
+}
+
+/* --- Themes --- */
+
+/* Dark Theme */
+body.theme-dark {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+}
+
+body.theme-dark input,
+body.theme-dark select,
+body.theme-dark textarea,
+body.theme-dark button {
+    background-color: #3c3c3c;
+    color: #d4d4d4;
+    border: 1px solid #555;
+}
+
+body.theme-dark #timing-chart-canvas,
+body.theme-dark #time-axis-canvas {
+    border-color: #555;
+}
+
+body.theme-dark .output-header h2 {
+    color: #d4d4d4;
+}
+
+/* Retro Theme */
+body.theme-retro {
+    background-color: #000;
+    color: #00ff00;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+body.theme-retro h1,
+body.theme-retro h2 {
+    text-shadow: 0 0 5px #00ff00;
+}
+
+body.theme-retro input,
+body.theme-retro select,
+body.theme-retro textarea,
+body.theme-retro button {
+    background-color: #111;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    font-family: inherit;
+}
+
+body.theme-retro #timing-chart-canvas,
+body.theme-retro #time-axis-canvas {
+    border-color: #00ff00;
+}
+
+body.theme-retro ::placeholder {
+    color: #008a00;
 }

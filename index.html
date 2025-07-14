@@ -42,16 +42,23 @@
 
     <div class="output-container">
         <div class="output-box">
-            <h2>WaveDrom JSON</h2>
+            <div class="output-header">
+                <h2>WaveDrom JSON</h2>
+                <button id="copy-wavedrom-btn">Copy</button>
+            </div>
             <textarea id="wavedrom-output" readonly></textarea>
         </div>
         <div class="output-box">
-            <h2>SystemVerilog Testbench</h2>
+            <div class="output-header">
+                <h2>SystemVerilog Testbench</h2>
+                <button id="copy-sv-btn">Copy</button>
+            </div>
             <textarea id="sv-testbench-output" readonly></textarea>
         </div>
     </div>
 
     <script src="script.js"></script>
+    <button id="theme-switcher">🎨</button>
 </body>
 
 </html>
