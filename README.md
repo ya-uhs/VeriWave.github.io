@@ -63,9 +63,9 @@ VeriWaveは、タイミングチャートを描画し、SystemVerilogテスト�
 ### 4. キーボードショートカット
 
 #### 基本操作
-- **Ctrl+N** (Cmd+N): 信号追加
-- **Ctrl+S** (Cmd+S): WaveDrom生成
-- **Ctrl+T** (Cmd+T): SVテストベンチ生成
+- **Alt+N**: 信号追加
+- **Alt+W**: WaveDrom生成
+- **Alt+S**: SVテストベンチ生成
 - **Delete**: 選択された信号を削除
 
 #### ズーム・スクロール
@@ -206,4 +206,4 @@ endmodule
 
 ---
 
-**💡 ヒント**: 初回使用時は、[ライブデモ](https://ya-uhs.github.io/VeriWave.github.io/)にアクセスして、Ctrl+Nで信号を追加してから波形描画を試してみてください！
+**💡 ヒント**: 初回使用時は、[ライブデモ](https://ya-uhs.github.io/VeriWave.github.io/)にアクセスして、Alt+Nで信号を追加してから波形描画を試してみてください！

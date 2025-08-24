@@ -881,20 +881,21 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * キーボードショートカットを処理
      * 生産性向上のための便利なショートカット
+     * ブラウザのデフォルトショートカットとの衝突を避けるため、Altキーを使用
      */
     function handleKeyboardShortcuts(e) {
-        // Ctrl+N または Cmd+N で信号追加
-        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        // Alt+N で信号追加（ブラウザの新規タブと衝突しない）
+        if (e.altKey && e.key === 'n') {
             e.preventDefault();
             addNewSignal();
         }
-        // Ctrl+S または Cmd+S でWaveDrom生成
-        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        // Alt+W でWaveDrom生成（ブラウザの保存と衝突しない）
+        if (e.altKey && e.key === 'w') {
             e.preventDefault();
             elements.wavedromBtn.click();
         }
-        // Ctrl+T または Cmd+T でSVテストベンチ生成
-        if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+        // Alt+S でSVテストベンチ生成（ブラウザの新規タブと衝突しない）
+        if (e.altKey && e.key === 's') {
             e.preventDefault();
             elements.svTestbenchBtn.click();
         }
