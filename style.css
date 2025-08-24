@@ -12,18 +12,62 @@ body {
     margin-bottom: 15px;
 }
 
-.main-container {
+.config-row {
     display: flex;
+    align-items: center;
+    margin-bottom: 5px;
 }
 
-.signals-container {
+.shortcuts-help {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.shortcuts-help small {
+    font-size: 0.85em;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.signals-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.signals-header h2 {
+    margin: 0;
+}
+
+.signals-and-waves {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.signals-section {
     width: 350px;
-    margin-right: 20px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 #signal-list {
     list-style: none;
     padding: 0;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0; /* 間隔を0にして波形描画エリアと一致させる */
+}
+
+#add-signal-btn {
+    align-self: flex-start;
+    margin-top: 5px;
 }
 
 .signal-item {
@@ -31,6 +75,33 @@ body {
     align-items: center;
     margin-bottom: 5px;
     height: 40px;
+}
+
+.signal-row {
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
+    padding: 5px;
+    height: 40px; /* 波形描画エリアの各行の高さと一致させる */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    margin-bottom: 0; /* 下マージンを0にして間隔を完全に除去 */
+}
+
+.signal-row:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.signal-row:focus {
+    outline: 2px solid #007acc;
+    background-color: rgba(0, 122, 204, 0.1);
+}
+
+.signal-row:focus-within {
+    outline: 2px solid #007acc;
+    background-color: rgba(0, 122, 204, 0.1);
 }
 
 .signal-item input,
@@ -58,19 +129,28 @@ body {
     width: 50px;
 }
 
-.chart-container {
+.waves-container {
+    flex-grow: 1;
     overflow-x: auto;
-    /* flex-grow: 1; */
-    /* Removed to prevent interference with fixed signal list width */
-}
-
-#timing-chart-canvas,
-#time-axis-canvas {
-    border: 1px solid #000;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 250px; /* 波形エリア全体の最小高さ */
 }
 
 #timing-chart-canvas {
+    border: 1px solid #000;
     cursor: crosshair;
+    min-height: 200px; /* 最小高さを確保 */
+    max-width: 100%;
+    height: auto;
+}
+
+#time-axis-canvas {
+    border: 1px solid #000;
+    margin-top: 5px;
+    height: 50px; /* Time Unit表示のため高さを増加 */
+    max-width: 100%;
 }
 
 .output-header {
@@ -131,6 +211,20 @@ body.theme-dark button {
     border: 1px solid #555;
 }
 
+body.theme-dark .signal-row:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.theme-dark .signal-row:focus,
+body.theme-dark .signal-row:focus-within {
+    outline: 2px solid #007acc;
+    background-color: rgba(0, 122, 204, 0.2);
+}
+
+body.theme-dark .shortcuts-help {
+    color: #aaa;
+}
+
 body.theme-dark #timing-chart-canvas,
 body.theme-dark #time-axis-canvas {
     border-color: #555;
@@ -169,4 +263,27 @@ body.theme-retro #time-axis-canvas {
 
 body.theme-retro ::placeholder {
     color: #008a00;
+}
+
+/* 通知アニメーション */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
 }

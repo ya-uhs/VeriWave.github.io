@@ -1,41 +1,205 @@
 # VeriWave
 
-VeriWave is a web-based GUI tool for drawing timing charts and generating SystemVerilog testbenches or Wavedrom JSON data.
+VeriWaveは、タイミングチャートを描画し、SystemVerilogテストベンチやWaveDrom JSONデータを生成するためのWebベースのGUIツールです。
 
-## Features
+## 🚀 主な機能
 
-- **Interactive Waveform Drawing**: Draw digital waveforms (high/low) directly on the canvas with your mouse.
-- **Bus and Binary Signals**: Supports both single-bit binary signals and multi-bit bus signals.
-- **Configurable Signals**:
-    - Add or remove signals.
-    - Toggle between binary and bus types.
-    - Set bit-width for bus signals.
-- **Automatic Clock Generation**:
-    - Automatically generate a clock signal based on a specified frequency.
-    - Enable/disable auto-generation to draw the clock manually.
-- **Flexible Time Axis**:
-    - Adjust the total number of simulation steps.
-    - Select time units (`ns`, `us`, `ms`).
-- **Code Generation**:
-    - **SystemVerilog Testbench**: Generate a `reg`-based stimulus from the drawn waveforms.
-    - **Wavedrom**: Convert the waveforms into Wavedrom JSON format for documentation.
+- **インタラクティブな波形描画**: マウスでキャンバス上に直接デジタル波形（High/Low）を描画
+- **信号タイプのサポート**:
+  - **Binary**: 単一ビットのバイナリ信号
+  - **Bus**: マルチビットのバス信号（Width設定対応）
+  - **Clock**: 自動生成されるクロック信号
+- **信号の設定**:
+  - 信号の追加・削除
+  - 信号タイプの切り替え（Binary/Bus/Clock）
+  - バス信号のビット幅設定（1-任意）
+  - クロック信号の周波数設定（MHz）
+- **動的な時間軸**:
+  - シミュレーションステップ数の調整（10-200、10刻み）
+  - 時間単位の選択（ns、us、ms）
+  - 時間軸の自動スケーリング
+- **ズーム・スクロール機能**:
+  - マウスホイールでズームイン/アウト
+  - 中クリックドラッグでスクロール
+  - キーボードショートカット対応
+- **コード生成**:
+  - **SystemVerilogテストベンチ**: 描画された波形から`logic`ベースの刺激信号を生成
+  - **WaveDrom**: 波形をWaveDrom JSON形式に変換してドキュメント化
+- **通知システム**: 操作結果をリアルタイムで通知
+- **アクセシビリティ**: キーボードナビゲーション、ARIA属性対応
 
-## How to Use
+## 🎯 使い方
 
-1.  **Open `index.html`**: Open the `index.html` file in a modern web browser.
-2.  **Configure Signals**:
-    - Use the "Add Signal" button to add new signals.
-    - For each signal, you can:
-        - Change its name.
-        - Check the "Bus" box to treat it as a bus and set its width.
-        - For the `clk` signal, check/uncheck "Auto" to toggle automatic generation and set the frequency in MHz.
-3.  **Set Global Time**:
-    - Use the "Time Unit" dropdown to select the base unit for the time axis.
-    - Use the "Steps" input to set the total simulation length.
-4.  **Draw Waveforms**:
-    - **Binary Signals**: Click and drag on the canvas to draw high or low levels.
-    - **Bus Signals**: Click on a time slot to enter a value (e.g., `0xAB`). Drag to extend the same value across multiple steps.
-5.  **Generate Outputs**:
-    - Click "WaveDrom生成" to get the Wavedrom JSON.
-    - Click "SVテストベンチ生成" to get the SystemVerilog testbench code.
-    - The generated code will appear in the text boxes at the bottom.
+### 1. 基本操作
+
+1. **ファイルを開く**: `index.html`をモダンなWebブラウザで開く
+2. **信号の設定**:
+   - 「信号を追加」ボタンで新しい信号を追加
+   - 各信号で以下を設定可能：
+     - 信号名の変更
+     - 信号タイプの選択（Binary/Bus/Clock）
+     - バス信号の場合：ビット幅の設定
+     - クロック信号の場合：周波数（MHz）の設定
+3. **時間設定**:
+   - 「Time Unit」ドロップダウンで時間軸の基本単位を選択
+   - 「Steps」入力でシミュレーション長を設定（10-200、10刻み）
+
+### 2. 波形描画
+
+- **Binary信号**: キャンバス上でクリック＆ドラッグしてHigh/Lowレベルを描画
+- **Bus信号**: 時間スロットをクリックして値を入力（例：`10`、`0xAB`、`0b101`）
+- **Clock信号**: 自動生成される（手動描画不可）
+
+### 3. ズーム・スクロール操作
+
+- **ズーム**: マウスホイールでズームイン/アウト（0.5x - 3.0x）
+- **スクロール**: 中クリックドラッグで左右にスクロール
+- **リセット**: 0キーでズーム・スクロールをリセット
+
+### 4. キーボードショートカット
+
+#### 基本操作
+- **Ctrl+N** (Cmd+N): 信号追加
+- **Ctrl+S** (Cmd+S): WaveDrom生成
+- **Ctrl+T** (Cmd+T): SVテストベンチ生成
+- **Delete**: 選択された信号を削除
+
+#### ズーム・スクロール
+- **0**: ズーム・スクロールリセット
+- **+** / **=**: ズームイン
+- **-**: ズームアウト
+- **←** / **→**: 左右スクロール
+
+### 5. 出力生成
+
+- 「WaveDrom生成」ボタンでWaveDrom JSONを生成
+- 「SVテストベンチ生成」ボタンでSystemVerilogテストベンチコードを生成
+- 生成されたコードは下部のテキストエリアに表示
+- 「Copy」ボタンでクリップボードにコピー
+
+## 🔧 技術仕様
+
+### 信号タイプ
+
+1. **Binary信号**
+   - 単一ビット（0/1）
+   - 青色で表示
+   - マウスで直接描画可能
+
+2. **Bus信号**
+   - マルチビット（1-任意のビット幅）
+   - 赤色で表示
+   - 値は16進数（0x）、2進数（0b）、10進数で入力可能
+   - Width設定でビット幅を指定
+
+3. **Clock信号**
+   - 緑色で表示
+   - 指定された周波数で自動生成
+   - 手動描画不可
+
+### 時間軸
+
+- **動的スケーリング**: Steps数に応じてグリッドステップが自動調整
+- **時間単位**: ns（10ns刻み）、us（1us刻み）、ms（0.1ms刻み）
+- **表示**: 時間軸の右上に現在の時間単位とズームレベルを表示
+
+### レイアウト
+
+- **信号リスト**: 左側に信号設定エリア（各行40px高さ）
+- **波形描画エリア**: 右側に波形表示エリア（各行40px高さ）
+- **位置同期**: 信号リストと波形描画エリアの各行が正確に同期
+
+### 生成されるコード
+
+#### SystemVerilogテストベンチ
+```systemverilog
+`timescale 1ns / 1ps
+
+module tb_top;
+    // 信号宣言
+    logic clk;
+    logic rst_n;
+    logic [7:0] data_bus;
+    // ...
+
+    initial begin
+        // 初期値設定
+        rst_n = 0;
+        data_bus = 8'h00;
+        
+        // 刺激信号の生成
+        #10 rst_n = 1;
+        #20 data_bus = 8'hAB;
+        // ...
+        
+        // クロック生成プロセス
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+endmodule
+```
+
+#### WaveDrom JSON
+```json
+{
+  "signal": [
+    {
+      "name": "clk",
+      "wave": "01010101..."
+    },
+    {
+      "name": "data_bus",
+      "wave": "2...2...",
+      "data": ["0xAB", "0xCD"]
+    }
+  ]
+}
+```
+
+## 🎨 テーマ
+
+3つのテーマが利用可能：
+- **Default**: 標準的なライトテーマ
+- **Dark**: ダークテーマ
+- **Retro**: レトロな緑色のターミナル風テーマ
+
+テーマは右下の🎨ボタンで切り替え可能で、設定はローカルストレージに保存されます。
+
+## 🔔 通知システム
+
+操作結果をリアルタイムで通知：
+- 信号の追加・削除
+- 信号タイプの変更
+- パラメータの変更
+- コピー操作の成功/失敗
+
+## ♿ アクセシビリティ
+
+- **キーボードナビゲーション**: Tabキーで要素間を移動
+- **ARIA属性**: スクリーンリーダー対応
+- **フォーカス表示**: 現在選択されている要素を視覚的に表示
+- **ショートカットキー**: マウス操作なしでも主要機能を利用可能
+
+## 🐛 最近の修正
+
+### v2.0 の改善点
+- **信号位置の同期**: 信号リストと波形描画エリアの位置ずれを修正
+- **Bus信号のWidth設定**: Bus信号タイプでのWidth入力フィールド表示を修正
+- **SVテストベンチ生成**: 変数名衝突による生成エラーを修正
+- **コード品質向上**: 関数の分割、コメント追加、エラーハンドリング改善
+- **ユーザビリティ向上**: 通知システム、アクセシビリティ、レイアウト改善
+
+## 🌐 ブラウザ対応
+
+- Chrome、Firefox、Safari、Edge等のモダンブラウザ
+- クリップボードAPI対応（古いブラウザではフォールバック機能あり）
+- Canvas API対応
+- ローカルストレージ対応
+
+## 📝 ライセンス
+
+このプロジェクトはMITライセンスの下で公開されています。
+
+---
+
+**💡 ヒント**: 初回使用時は、Ctrl+Nで信号を追加してから波形描画を試してみてください！

@@ -12,26 +12,37 @@
     <h1>VeriWave</h1>
 
     <div class="config-container">
-        <label for="time-unit">Time Unit:</label>
-        <select id="time-unit">
-            <option value="ns">ns</option>
-            <option value="us">us</option>
-            <option value="ms">ms</option>
-        </select>
-        <label for="time-steps" style="margin-left: 15px;">Steps:</label>
-        <input type="number" id="time-steps" value="50" min="10" step="10">
+        <div class="config-row">
+            <label for="time-unit">Time Unit:</label>
+            <select id="time-unit">
+                <option value="ns">ns</option>
+                <option value="us">us</option>
+                <option value="ms">ms</option>
+            </select>
+            <label for="time-steps" style="margin-left: 15px;">Steps:</label>
+            <input type="number" id="time-steps" value="50" min="10" max="200" step="10">
+        </div>
+        <div class="shortcuts-help">
+            <small>ショートカット: Ctrl+N (信号追加), Ctrl+S (WaveDrom), Ctrl+T (SV), Delete (信号削除)</small>
+            <br>
+            <small>ズーム・スクロール: マウスホイール (ズーム), 中クリックドラッグ (スクロール), 0 (リセット), +/- (ズーム), ←→ (スクロール)</small>
+        </div>
     </div>
     <div class="main-container">
-        <div class="signals-container">
+        <div class="signals-header">
             <h2>Signals</h2>
-            <ul id="signal-list">
-                <!-- JSで動的に生成 -->
-            </ul>
-            <button id="add-signal-btn">信号を追加</button>
         </div>
-        <div class="chart-container">
-            <canvas id="timing-chart-canvas"></canvas>
-            <canvas id="time-axis-canvas"></canvas>
+        <div class="signals-and-waves">
+            <div class="signals-section">
+                <div id="signal-list">
+                    <!-- JSで動的に生成 -->
+                </div>
+                <button id="add-signal-btn">信号を追加</button>
+            </div>
+            <div class="waves-container">
+                <canvas id="timing-chart-canvas"></canvas>
+                <canvas id="time-axis-canvas"></canvas>
+            </div>
         </div>
     </div>
 
