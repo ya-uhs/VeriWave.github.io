@@ -2,6 +2,8 @@
 
 VeriWaveは、タイミングチャートを描画し、SystemVerilogテストベンチやWaveDrom JSONデータを生成するためのWebベースのGUIツールです。
 
+🌐 **ライブデモ**: [https://ya-uhs.github.io/VeriWave.github.io/](https://ya-uhs.github.io/VeriWave.github.io/)
+
 ## 🚀 主な機能
 
 - **インタラクティブな波形描画**: マウスでキャンバス上に直接デジタル波形（High/Low）を描画
@@ -32,7 +34,9 @@ VeriWaveは、タイミングチャートを描画し、SystemVerilogテスト�
 
 ### 1. 基本操作
 
-1. **ファイルを開く**: `index.html`をモダンなWebブラウザで開く
+1. **アプリケーションを開く**: 
+   - **ライブデモ**: [https://ya-uhs.github.io/VeriWave.github.io/](https://ya-uhs.github.io/VeriWave.github.io/) にアクセス
+   - **ローカル実行**: `index.html`をモダンなWebブラウザで開く
 2. **信号の設定**:
    - 「信号を追加」ボタンで新しい信号を追加
    - 各信号で以下を設定可能：
@@ -202,4 +206,4 @@ endmodule
 
 ---
 
-**💡 ヒント**: 初回使用時は、Ctrl+Nで信号を追加してから波形描画を試してみてください！
+**💡 ヒント**: 初回使用時は、[ライブデモ](https://ya-uhs.github.io/VeriWave.github.io/)にアクセスして、Ctrl+Nで信号を追加してから波形描画を試してみてください！
