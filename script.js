@@ -136,45 +136,15 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {string} type - 通知タイプ ('info', 'warning', 'error')
      */
     function showNotification(message, type = 'info') {
+        const colors = { error: '#e05252', warning: '#f0a020', info: '#4f8ef7' };
         const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
+        notification.className = 'notification';
         notification.textContent = message;
-        
-        // スタイル設定（インラインで即座に適用）
-        const styles = {
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            padding: '10px 15px',
-            borderRadius: '4px',
-            color: 'white',
-            fontWeight: 'bold',
-            zIndex: '1000',
-            animation: 'slideIn 0.3s ease'
-        };
-
-        // タイプ別の色設定
-        const colors = {
-            error: '#dc3545',
-            warning: '#ffc107',
-            info: '#007acc'
-        };
-
-        styles.backgroundColor = colors[type] || colors.info;
-        if (type === 'warning') styles.color = '#000';
-
-        Object.assign(notification.style, styles);
-        
+        notification.style.background = colors[type] || colors.info;
         document.body.appendChild(notification);
-        
-        // 3秒後に自動削除
         setTimeout(() => {
-            notification.style.animation = 'slideOut 0.3s ease';
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 300);
+            notification.style.animation = 'slideOut 0.25s ease';
+            setTimeout(() => notification.parentNode?.removeChild(notification), 250);
         }, 3000);
     }
 
@@ -297,213 +267,78 @@ document.addEventListener('DOMContentLoaded', () => {
         const signalRow = document.createElement('div');
         signalRow.className = 'signal-row';
         
-        // アクセシビリティ設定
         signalRow.tabIndex = 0;
         signalRow.setAttribute('role', 'listitem');
-        signalRow.setAttribute('aria-label', `信号 ${index + 1}: ${signal.name}`);
 
-        // 信号名入力フィールド
-        const nameInput = createNameInput(signal);
-        signalRow.appendChild(nameInput);
+        const dot = document.createElement('span');
+        dot.className = `signal-dot ${signal.type}`;
+        signalRow.appendChild(dot);
 
-        // 信号タイプ選択
-        const typeSelect = createTypeSelect(signal, index);
-        signalRow.appendChild(typeSelect);
-
-        // 信号タイプに応じた追加要素
-        if (signal.type === 'bus') {
-            const busElements = createBusElements(signal);
-            busElements.forEach(element => signalRow.appendChild(element));
-        } else if (signal.type === 'clk') {
-            const clkElements = createClockElements(signal);
-            clkElements.forEach(element => signalRow.appendChild(element));
-        }
-
-        // 削除ボタン
-        const deleteBtn = createDeleteButton(index);
-        signalRow.appendChild(deleteBtn);
-
-        return signalRow;
-    }
-
-    /**
-     * 信号名入力フィールドを作成
-     */
-    function createNameInput(signal) {
         const nameInput = document.createElement('input');
         nameInput.type = 'text';
         nameInput.value = signal.name;
         nameInput.setAttribute('aria-label', '信号名');
-        
-        Object.assign(nameInput.style, {
-            width: '80px',
-            marginRight: '5px',
-            height: '30px',
-            boxSizing: 'border-box'
-        });
-        
-        nameInput.addEventListener('change', (e) => { 
-            const oldName = signal.name;
-            signal.name = e.target.value;
-            
-            // 名前変更の通知
-            if (oldName !== signal.name) {
-                showNotification(`信号名を "${oldName}" から "${signal.name}" に変更しました`, 'info');
-            }
-        });
-        
-        nameInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.target.blur();
-            }
-        });
-        
-        return nameInput;
-    }
+        nameInput.addEventListener('change', (e) => { signal.name = e.target.value; });
+        nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.target.blur(); });
+        signalRow.appendChild(nameInput);
 
-    /**
-     * 信号タイプ選択フィールドを作成
-     */
-    function createTypeSelect(signal, index) {
         const typeSelect = document.createElement('select');
-        
-        Object.assign(typeSelect.style, {
-            marginRight: '5px',
-            height: '30px',
-            boxSizing: 'border-box'
+        [{ value: 'binary', label: 'Bin' }, { value: 'bus', label: 'Bus' }, { value: 'clk', label: 'Clk' }].forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.value;
+            opt.textContent = t.label;
+            if (signal.type === t.value) opt.selected = true;
+            typeSelect.appendChild(opt);
         });
-        
-        const signalTypes = [
-            { value: 'binary', label: 'Binary' },
-            { value: 'bus', label: 'Bus' },
-            { value: 'clk', label: 'Clk' }
-        ];
-        
-        signalTypes.forEach(type => {
-            const option = document.createElement('option');
-            option.value = type.value;
-            option.textContent = type.label;
-            if (signal.type === type.value) option.selected = true;
-            typeSelect.appendChild(option);
-        });
-        
         typeSelect.addEventListener('change', (e) => {
-            const oldType = signal.type;
             signal.type = e.target.value;
-            
-            // 信号タイプに応じた初期化
             if (signal.type === 'bus' && !signal.data) {
                 signal.data = Array(state.timeSteps).fill('');
                 signal.width = signal.width > 1 ? signal.width : 8;
             }
-            if (signal.type === 'clk' && !signal.freq) {
-                signal.freq = 50;
-            }
-            
-            // 信号リストを再描画してからキャンバスを設定
+            if (signal.type === 'clk' && !signal.freq) signal.freq = 50;
             renderSignalList();
             setupCanvas();
-            
-            // タイプ変更の通知
-            showNotification(`信号 "${signal.name}" のタイプを ${oldType} から ${signal.type} に変更しました`, 'info');
         });
-        
-        return typeSelect;
-    }
+        signalRow.appendChild(typeSelect);
 
-    /**
-     * バス信号用の要素を作成
-     */
-    function createBusElements(signal) {
-        const widthLabel = document.createElement('label');
-        widthLabel.textContent = 'Width:';
-        widthLabel.style.marginRight = '5px';
-        
-        const widthInput = document.createElement('input');
-        widthInput.type = 'number';
-        widthInput.value = signal.width;
-        widthInput.min = 1;
-        
-        Object.assign(widthInput.style, {
-            width: '50px',
-            marginRight: '5px',
-            height: '30px',
-            boxSizing: 'border-box'
-        });
-        
-        widthInput.addEventListener('change', (e) => { 
-            const oldWidth = signal.width;
-            signal.width = parseInt(e.target.value, 10);
-            
-            // 幅変更の通知
-            showNotification(`信号 "${signal.name}" の幅を ${oldWidth} から ${signal.width} に変更しました`, 'info');
-        });
-        
-        return [widthLabel, widthInput];
-    }
+        if (signal.type === 'bus') {
+            const lbl = document.createElement('label');
+            lbl.textContent = 'W:';
+            const widthInput = document.createElement('input');
+            widthInput.type = 'number';
+            widthInput.value = signal.width;
+            widthInput.min = 1;
+            widthInput.addEventListener('change', (e) => { signal.width = parseInt(e.target.value, 10); });
+            signalRow.appendChild(lbl);
+            signalRow.appendChild(widthInput);
+        } else if (signal.type === 'clk') {
+            const freqInput = document.createElement('input');
+            freqInput.type = 'number';
+            freqInput.value = signal.freq;
+            freqInput.addEventListener('change', (e) => {
+                signal.freq = parseFloat(e.target.value);
+                generateAllClockWaves();
+                redrawAll();
+            });
+            const freqUnit = document.createElement('label');
+            freqUnit.textContent = 'MHz';
+            signalRow.appendChild(freqInput);
+            signalRow.appendChild(freqUnit);
+        }
 
-    /**
-     * クロック信号用の要素を作成
-     */
-    function createClockElements(signal) {
-        const freqInput = document.createElement('input');
-        freqInput.type = 'number';
-        freqInput.value = signal.freq;
-        
-        Object.assign(freqInput.style, {
-            width: '50px',
-            marginRight: '5px',
-            height: '30px',
-            boxSizing: 'border-box'
-        });
-        
-        freqInput.addEventListener('change', (e) => {
-            const oldFreq = signal.freq;
-            signal.freq = parseFloat(e.target.value);
-            
-            // クロック波形を再生成して描画
-            generateAllClockWaves();
-            redrawAll();
-            
-            // 周波数変更の通知
-            showNotification(`信号 "${signal.name}" の周波数を ${oldFreq}MHz から ${signal.freq}MHz に変更しました`, 'info');
-        });
-        
-        const freqUnit = document.createElement('span');
-        freqUnit.textContent = 'MHz';
-        freqUnit.style.marginRight = '5px';
-        
-        return [freqInput, freqUnit];
-    }
-
-    /**
-     * 削除ボタンを作成
-     */
-    function createDeleteButton(index) {
         const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'X';
+        deleteBtn.textContent = '✕';
+        deleteBtn.className = 'delete-btn';
         deleteBtn.setAttribute('aria-label', '信号を削除');
-        
-        Object.assign(deleteBtn.style, {
-            height: '30px',
-            width: '30px',
-            boxSizing: 'border-box',
-            marginLeft: '5px'
-        });
-        
         deleteBtn.addEventListener('click', () => {
-            const deletedSignalName = signals[index].name;
             signals.splice(index, 1);
-            
-            // 信号リストを再描画してからキャンバスを設定
             renderSignalList();
             setupCanvas();
-            
-            // 削除完了の通知
-            showNotification(`信号 "${deletedSignalName}" を削除しました`, 'info');
         });
-        
-        return deleteBtn;
+        signalRow.appendChild(deleteBtn);
+
+        return signalRow;
     }
 
     // ========================================
@@ -580,8 +415,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.translate(-state.scrollOffset, 0);
         ctx.scale(state.zoomLevel, 1);
         
-        // グリッドのスタイル設定
-        ctx.strokeStyle = '#f0f0f0';
+        const isDark = !document.body.classList.contains('theme-light');
+        ctx.strokeStyle = isDark ? '#2a2a4a' : '#e0e0e0';
         ctx.lineWidth = 1;
         
         // 水平線（信号境界）を描画
@@ -644,10 +479,11 @@ document.addEventListener('DOMContentLoaded', () => {
      * 時間軸のスタイルを設定
      */
     function setupTimeAxisStyle() {
-        timeCtx.font = '14px sans-serif';
+        const isLight = document.body.classList.contains('theme-light');
+        timeCtx.font = '12px sans-serif';
         timeCtx.textAlign = 'center';
         timeCtx.textBaseline = 'top';
-        timeCtx.fillStyle = '#000';
+        timeCtx.fillStyle = isLight ? '#333' : '#888';
     }
 
     /**
@@ -692,17 +528,12 @@ document.addEventListener('DOMContentLoaded', () => {
      * Time Unit情報を描画
      */
     function drawTimeUnitInfo() {
+        const isLight = document.body.classList.contains('theme-light');
         timeCtx.textAlign = 'right';
-        timeCtx.font = '16px sans-serif';
-        
-        // 背景を描画（見やすさのため）
-        timeCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-        timeCtx.fillRect(elements.timeAxisCanvas.width - 200, 20, 190, 20);
-        
-        // Time Unitテキストを描画
-        timeCtx.fillStyle = '#333';
-        const unitText = `Time Unit: ${state.timeUnit} | Zoom: ${state.zoomLevel.toFixed(1)}x`;
-        timeCtx.fillText(unitText, elements.timeAxisCanvas.width - 10, 25);
+        timeCtx.font = '12px sans-serif';
+        timeCtx.fillStyle = isLight ? '#333' : '#666';
+        const unitText = `${state.timeUnit} | ${state.zoomLevel.toFixed(1)}x`;
+        timeCtx.fillText(unitText, elements.timeAxisCanvas.width - 8, 25);
     }
 
     /**
@@ -762,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * バイナリ/クロック波形を描画
      */
     function drawBinaryWaveform(signal, y, startStep, endStep, gridStep) {
-        const color = signal.type === 'clk' ? '#22aa22' : '#0000ff';
+        const color = signal.type === 'clk' ? '#4caf50' : '#4f8ef7';
         ctx.strokeStyle = color;
         ctx.beginPath();
         
@@ -793,8 +624,9 @@ document.addEventListener('DOMContentLoaded', () => {
      * バス波形を描画
      */
     function drawBusWaveform(signal, y, startStep, endStep, gridStep) {
-        ctx.strokeStyle = '#ff0000';
-        ctx.fillStyle = '#000';
+        const isLight = document.body.classList.contains('theme-light');
+        ctx.strokeStyle = '#f06292';
+        ctx.fillStyle = isLight ? '#333' : '#ccc';
         ctx.beginPath();
         
         let lastData = null;
@@ -1336,15 +1168,24 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.wavedromOutput.value = JSON.stringify(wavedromObj, null, 2);
     }
 
-    /**
-     * 信号をWaveDrom形式に変換
-     */
+    function wavedromRunLength(chars) {
+        let result = '';
+        let prev = null;
+        for (const ch of chars) {
+            result += (ch === prev) ? '.' : ch;
+            prev = ch;
+        }
+        return result;
+    }
+
     function convertSignalToWaveDrom(signal) {
-        let waveStr = '';
         const dataArr = [];
-        
-        if (signal.type === 'binary' || signal.type === 'clk') {
-            waveStr = signal.wave.map(val => val === null ? '.' : val.toString()).join('');
+        let waveStr = '';
+
+        if (signal.type === 'clk') {
+            waveStr = wavedromRunLength(signal.wave.map(v => v === null ? 'x' : String(v)));
+        } else if (signal.type === 'binary') {
+            waveStr = wavedromRunLength(signal.wave.map(v => v === null ? 'x' : String(v)));
         } else if (signal.type === 'bus') {
             let lastData = null;
             for (const data of signal.data) {
@@ -1362,12 +1203,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
-        
+
         const sig = { name: signal.name, wave: waveStr };
-        if (dataArr.length > 0) {
-            sig.data = dataArr;
-        }
-        
+        if (dataArr.length > 0) sig.data = dataArr;
         return sig;
     }
 
@@ -1545,7 +1383,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * テーマ設定
      * ダークテーマ、レトロテーマ、デフォルトテーマを切り替え
      */
-    const themes = ['', 'theme-dark', 'theme-retro']; // '' is default
+    const themes = ['', 'theme-light', 'theme-retro']; // '' = dark (default)
     let currentThemeIndex = 0;
 
     /**

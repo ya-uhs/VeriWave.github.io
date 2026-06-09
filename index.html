@@ -1,75 +1,67 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VeriWave</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <h1>VeriWave</h1>
-
-    <div class="config-container">
-        <div class="config-row">
-            <label for="time-unit">Time Unit:</label>
+    <header id="app-header">
+        <h1>VeriWave</h1>
+        <div class="header-controls">
+            <label for="time-unit">Unit</label>
             <select id="time-unit">
                 <option value="ns">ns</option>
                 <option value="us">us</option>
                 <option value="ms">ms</option>
             </select>
-            <label for="time-steps" style="margin-left: 15px;">Steps:</label>
+            <label for="time-steps">Steps</label>
             <input type="number" id="time-steps" value="50" min="10" max="200" step="10">
         </div>
-        <div class="shortcuts-help">
-            <small>ショートカット: Alt+N (信号追加), Alt+W (WaveDrom), Alt+S (SV), Delete (信号削除)</small>
-            <br>
-            <small>ズーム・スクロール: マウスホイール (ズーム), 中クリックドラッグ (スクロール), 0 (リセット), +/- (ズーム), ←→ (スクロール)</small>
-        </div>
-    </div>
-    <div class="main-container">
-        <div class="signals-header">
-            <h2>Signals</h2>
-        </div>
-        <div class="signals-and-waves">
-            <div class="signals-section">
-                <div id="signal-list">
-                    <!-- JSで動的に生成 -->
-                </div>
-                <button id="add-signal-btn">信号を追加</button>
+        <button id="theme-switcher" title="テーマ切り替え">🎨</button>
+    </header>
+
+    <div id="app-body">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <span>Signals</span>
+                <button id="add-signal-btn">+ Add</button>
             </div>
+            <div id="signal-list"></div>
+        </aside>
+
+        <div id="wave-panel">
             <div class="waves-container">
                 <canvas id="timing-chart-canvas"></canvas>
                 <canvas id="time-axis-canvas"></canvas>
             </div>
-        </div>
-    </div>
 
-    <div class="controls-container">
-        <button id="wavedrom-btn">WaveDrom生成</button>
-        <button id="sv-testbench-btn">SVテストベンチ生成</button>
-    </div>
-
-    <div class="output-container">
-        <div class="output-box">
-            <div class="output-header">
-                <h2>WaveDrom JSON</h2>
-                <button id="copy-wavedrom-btn">Copy</button>
+            <div id="output-panel">
+                <div class="output-toolbar">
+                    <button id="wavedrom-btn" class="btn-generate">&#9654; WaveDrom</button>
+                    <button id="sv-testbench-btn" class="btn-generate sv">&#9654; SV Testbench</button>
+                </div>
+                <div class="output-areas">
+                    <div class="output-box">
+                        <div class="output-box-header">
+                            <span>WaveDrom JSON</span>
+                            <button id="copy-wavedrom-btn" class="btn-copy">Copy</button>
+                        </div>
+                        <textarea id="wavedrom-output" readonly></textarea>
+                    </div>
+                    <div class="output-box">
+                        <div class="output-box-header">
+                            <span>SystemVerilog Testbench</span>
+                            <button id="copy-sv-btn" class="btn-copy">Copy</button>
+                        </div>
+                        <textarea id="sv-testbench-output" readonly></textarea>
+                    </div>
+                </div>
             </div>
-            <textarea id="wavedrom-output" readonly></textarea>
-        </div>
-        <div class="output-box">
-            <div class="output-header">
-                <h2>SystemVerilog Testbench</h2>
-                <button id="copy-sv-btn">Copy</button>
-            </div>
-            <textarea id="sv-testbench-output" readonly></textarea>
         </div>
     </div>
 
     <script src="script.js"></script>
-    <button id="theme-switcher">🎨</button>
 </body>
-
 </html>

@@ -1,289 +1,439 @@
-/* General Styles */
-body {
-    font-family: sans-serif;
-    margin: 20px;
-    transition: background-color 0.3s, color 0.3s;
+:root {
+    --bg: #1a1a2e;
+    --surface: #16213e;
+    --surface2: #0f3460;
+    --accent: #4f8ef7;
+    --accent2: #7c5cbf;
+    --text: #e0e0e0;
+    --text-muted: #888;
+    --border: #2a2a4a;
+    --clk-color: #4caf50;
+    --binary-color: #4f8ef7;
+    --bus-color: #f06292;
+    --danger: #e05252;
+    --radius: 6px;
+    --header-h: 52px;
 }
 
-.config-container,
-.main-container,
-.controls-container,
-.output-container {
-    margin-bottom: 15px;
-}
-
-.config-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-}
-
-.shortcuts-help {
-    color: #666;
-    font-size: 0.9em;
-}
-
-.shortcuts-help small {
-    font-size: 0.85em;
-}
-
-.main-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.signals-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.signals-header h2 {
+* {
+    box-sizing: border-box;
     margin: 0;
-}
-
-.signals-and-waves {
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-}
-
-.signals-section {
-    width: 350px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-#signal-list {
-    list-style: none;
     padding: 0;
-    margin-bottom: 10px;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    gap: 0; /* 間隔を0にして波形描画エリアと一致させる */
+    overflow: hidden;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* ── Header ── */
+#app-header {
+    height: var(--header-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+#app-header h1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--accent);
+    margin-right: 8px;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.header-controls label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.header-controls select,
+.header-controls input[type="number"] {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    height: 30px;
+}
+
+.header-controls input[type="number"] {
+    width: 64px;
+}
+
+#theme-switcher {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: var(--radius);
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#theme-switcher:hover { background: var(--surface2); }
+
+/* ── Main layout ── */
+#app-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ── Sidebar ── */
+#sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 #add-signal-btn {
-    align-self: flex-start;
-    margin-top: 5px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 3px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-weight: 600;
 }
 
-.signal-item {
+#add-signal-btn:hover { filter: brightness(1.1); }
+
+#signal-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px;
     display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-    height: 40px;
+    flex-direction: column;
+    gap: 0;
 }
 
 .signal-row {
-    transition: background-color 0.2s ease;
-    border-radius: 4px;
-    padding: 5px;
-    height: 40px; /* 波形描画エリアの各行の高さと一致させる */
-    box-sizing: border-box;
     display: flex;
     align-items: center;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    margin-bottom: 0; /* 下マージンを0にして間隔を完全に除去 */
+    gap: 6px;
+    padding: 0 6px;
+    height: 40px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    cursor: default;
+    transition: background 0.15s;
 }
 
-.signal-row:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-}
+.signal-row:hover { background: rgba(255,255,255,0.04); }
 
-.signal-row:focus {
-    outline: 2px solid #007acc;
-    background-color: rgba(0, 122, 204, 0.1);
-}
-
+.signal-row:focus,
 .signal-row:focus-within {
-    outline: 2px solid #007acc;
-    background-color: rgba(0, 122, 204, 0.1);
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(79,142,247,0.08);
 }
 
-.signal-item input,
-.signal-item select {
-    margin-right: 5px;
+.signal-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 
-.signal-item input[type="text"] {
-    width: 80px;
-    /* Adjusted width */
-    margin-right: 5px;
+.signal-dot.clk    { background: var(--clk-color); }
+.signal-dot.binary { background: var(--binary-color); }
+.signal-dot.bus    { background: var(--bus-color); }
+
+.signal-row input[type="text"] {
+    width: 72px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.85rem;
+    padding: 2px 4px;
+    outline: none;
 }
 
-.signal-item .clk-freq-input {
-    width: 50px;
-    /* Adjusted width */
-    margin-left: 5px;
+.signal-row input[type="text"]:focus { border-bottom-color: var(--accent); }
+
+.signal-row select {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    padding: 2px 4px;
+    height: 26px;
 }
 
-.signal-item label {
-    margin-right: 5px;
+.signal-row input[type="number"] {
+    width: 46px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    padding: 2px 4px;
+    height: 26px;
 }
 
-.signal-item input[type="number"] {
-    width: 50px;
+.signal-row label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.delete-btn {
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.delete-btn:hover {
+    background: var(--danger);
+    color: #fff;
+}
+
+/* ── Wave area ── */
+#wave-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg);
 }
 
 .waves-container {
-    flex-grow: 1;
-    overflow-x: auto;
-    min-width: 0;
+    flex: 1;
+    overflow: auto;
     display: flex;
     flex-direction: column;
-    min-height: 250px; /* 波形エリア全体の最小高さ */
 }
 
 #timing-chart-canvas {
-    border: 1px solid #000;
+    border: none;
+    border-bottom: 1px solid var(--border);
     cursor: crosshair;
-    min-height: 200px; /* 最小高さを確保 */
-    max-width: 100%;
-    height: auto;
+    display: block;
 }
 
 #time-axis-canvas {
-    border: 1px solid #000;
-    margin-top: 5px;
-    height: 50px; /* Time Unit表示のため高さを増加 */
-    max-width: 100%;
+    border: none;
+    display: block;
+    flex-shrink: 0;
 }
 
-.output-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-}
-
-.output-header h2 {
-    margin: 0;
-}
-
-.output-box {
-    flex-grow: 1;
+/* ── Output panel ── */
+#output-panel {
+    height: 220px;
+    flex-shrink: 0;
+    border-top: 1px solid var(--border);
     display: flex;
     flex-direction: column;
 }
 
-.output-container {
+.output-toolbar {
     display: flex;
-    gap: 20px;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
 }
 
-textarea {
-    width: 100%;
-    height: 200px;
-    box-sizing: border-box;
-}
-
-/* Theme Switcher Button */
-#theme-switcher {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    font-size: 24px;
-    padding: 10px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
+.btn-generate {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 5px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
-    background-color: white;
 }
 
-/* --- Themes --- */
+.btn-generate:hover { filter: brightness(1.1); }
+.btn-generate.sv { background: var(--accent2); }
 
-/* Dark Theme */
-body.theme-dark {
-    background-color: #1e1e1e;
-    color: #d4d4d4;
+.output-areas {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
 }
 
-body.theme-dark input,
-body.theme-dark select,
-body.theme-dark textarea,
-body.theme-dark button {
-    background-color: #3c3c3c;
-    color: #d4d4d4;
-    border: 1px solid #555;
+.output-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    min-width: 0;
 }
 
-body.theme-dark .signal-row:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+.output-box:last-child { border-right: none; }
+
+.output-box-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
 }
 
-body.theme-dark .signal-row:focus,
-body.theme-dark .signal-row:focus-within {
-    outline: 2px solid #007acc;
-    background-color: rgba(0, 122, 204, 0.2);
+.btn-copy {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    cursor: pointer;
 }
 
-body.theme-dark .shortcuts-help {
-    color: #aaa;
+.btn-copy:hover {
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
-body.theme-dark #timing-chart-canvas,
-body.theme-dark #time-axis-canvas {
-    border-color: #555;
+.output-box textarea {
+    flex: 1;
+    background: var(--bg);
+    color: var(--text);
+    border: none;
+    padding: 8px 12px;
+    font-family: 'Consolas', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    resize: none;
+    outline: none;
+    width: 100%;
 }
 
-body.theme-dark .output-header h2 {
-    color: #d4d4d4;
+/* ── Notifications ── */
+.notification {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    padding: 8px 14px;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    font-weight: 500;
+    z-index: 1000;
+    animation: slideIn 0.25s ease;
+    max-width: 320px;
+    color: #fff;
 }
 
-/* Retro Theme */
-body.theme-retro {
-    background-color: #000;
-    color: #00ff00;
-    font-family: 'Courier New', Courier, monospace;
-}
-
-body.theme-retro h1,
-body.theme-retro h2 {
-    text-shadow: 0 0 5px #00ff00;
-}
-
-body.theme-retro input,
-body.theme-retro select,
-body.theme-retro textarea,
-body.theme-retro button {
-    background-color: #111;
-    color: #00ff00;
-    border: 1px solid #00ff00;
-    font-family: inherit;
-}
-
-body.theme-retro #timing-chart-canvas,
-body.theme-retro #time-axis-canvas {
-    border-color: #00ff00;
-}
-
-body.theme-retro ::placeholder {
-    color: #008a00;
-}
-
-/* 通知アニメーション */
 @keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+    from { transform: translateX(110%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
 }
 
 @keyframes slideOut {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    to {
-        transform: translateX(100%);
-        opacity: 0;
-    }
+    from { transform: translateX(0);    opacity: 1; }
+    to   { transform: translateX(110%); opacity: 0; }
 }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+    body { overflow: auto; height: auto; }
+    #app-body { flex-direction: column; overflow: visible; }
+    #sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+    #wave-panel { min-height: 300px; }
+    #output-panel { height: auto; }
+    .output-areas { flex-direction: column; }
+    .output-box { border-right: none; border-bottom: 1px solid var(--border); }
+    .output-box textarea { height: 140px; }
+}
+
+/* ── Light theme ── */
+body.theme-light {
+    --bg: #f5f5f7;
+    --surface: #ffffff;
+    --surface2: #e8eaf6;
+    --text: #1a1a2e;
+    --text-muted: #666;
+    --border: #dde0f0;
+    --accent: #3b73e8;
+}
+
+/* ── Retro theme ── */
+body.theme-retro {
+    --bg: #000;
+    --surface: #0a0a0a;
+    --surface2: #001100;
+    --text: #00ff00;
+    --text-muted: #007700;
+    --border: #003300;
+    --accent: #00ff00;
+    --clk-color: #00ff00;
+    --binary-color: #00cc00;
+    --bus-color: #ffff00;
+    font-family: 'Courier New', monospace;
+}
+
+body.theme-retro h1 { text-shadow: 0 0 8px #00ff00; }
+body.theme-retro select,
+body.theme-retro input,
+body.theme-retro textarea,
+body.theme-retro button { font-family: inherit; }
