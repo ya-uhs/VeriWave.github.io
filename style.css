@@ -79,8 +79,20 @@ body {
     width: 64px;
 }
 
-#theme-switcher {
+#github-link {
     margin-left: auto;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 4px;
+    border-radius: var(--radius);
+}
+
+#github-link:hover { color: var(--text); }
+
+#theme-switcher {
+    margin-left: 4px;
     background: transparent;
     border: 1px solid var(--border);
     color: var(--text);
@@ -272,11 +284,14 @@ body {
 
 /* ── Output panel ── */
 #output-panel {
-    height: 220px;
+    height: 35vh;
+    min-height: 180px;
     flex-shrink: 0;
     border-top: 1px solid var(--border);
     display: flex;
     flex-direction: column;
+    resize: vertical;
+    overflow: hidden;
 }
 
 .output-toolbar {
