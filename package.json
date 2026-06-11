@@ -1,0 +1,17 @@
+{
+  "name": "veriwave",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint script.js utils.js",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "vitest": "^2.0.0"
+  },
+  "dependencies": {
+    "@eslint/js": "^10.0.1",
+    "globals": "^17.6.0"
+  }
+}

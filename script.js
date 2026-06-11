@@ -1,20 +1,4 @@
-/**
- * VeriWave - デジタル波形ビューアー
- * 
- * このアプリケーションは、デジタル信号の波形を描画し、
- * WaveDromやSystemVerilogテストベンチを生成するためのツールです。
- * 
- * 主な機能:
- * - リアルタイム波形描画
- * - ズーム・スクロール機能
- * - マウスによる波形編集
- * - WaveDrom形式でのエクスポート
- * - SystemVerilogテストベンチ生成
- * - テーマ切り替え
- * 
- * 作者: AI Assistant (with a sense of humor)
- * バージョン: 2.0 (Improved & Commented)
- */
+import { convertSignalToWaveDrom, formatSvValue, calculateGridStep } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // ========================================
@@ -94,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // 信号データ（アプリケーションの心臓部）
-    let signals = [
+    const signals = [
         { 
             name: 'clk', 
             type: 'clk', 
@@ -113,20 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========================================
     // ユーティリティ関数
     // ========================================
-
-    /**
-     * グリッドステップを動的に計算
-     * Stepsの値に応じて最適なグリッド間隔を決定
-     * 小さすぎると見づらい、大きすぎると無駄なスペース
-     * 
-     * @param {number} timeSteps - 時間ステップ数
-     * @returns {number} 計算されたグリッドステップ
-     */
-    function calculateGridStep(timeSteps) {
-        const { minGridStep, maxGridStep, targetWidth } = DRAWING_CONFIG;
-        const calculatedStep = Math.max(minGridStep, Math.min(maxGridStep, targetWidth / timeSteps));
-        return Math.floor(calculatedStep);
-    }
 
     /**
      * 通知を表示する関数
@@ -606,7 +576,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // 前の値と異なる場合は垂直線を描画
             if (i > startStep && signal.wave[i - 1] !== null && signal.wave[i - 1] !== value) {
-                const prevX = (i - 1) * gridStep;
                 const prevY = y + (signal.wave[i - 1] === 1 ? DRAWING_CONFIG.signalHeight * 0.25 : DRAWING_CONFIG.signalHeight * 0.75);
                 ctx.moveTo(x, prevY);
                 ctx.lineTo(x, waveY);
@@ -1132,7 +1101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             document.execCommand('copy');
             showNotification('クリップボードにコピーしました！', 'info');
-        } catch (err) {
+        } catch {
             showNotification('コピーに失敗しました。', 'error');
         }
     }
@@ -1166,47 +1135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         elements.wavedromOutput.value = JSON.stringify(wavedromObj, null, 2);
-    }
-
-    function wavedromRunLength(chars) {
-        let result = '';
-        let prev = null;
-        for (const ch of chars) {
-            result += (ch === prev) ? '.' : ch;
-            prev = ch;
-        }
-        return result;
-    }
-
-    function convertSignalToWaveDrom(signal) {
-        const dataArr = [];
-        let waveStr = '';
-
-        if (signal.type === 'clk') {
-            waveStr = wavedromRunLength(signal.wave.map(v => v === null ? 'x' : String(v)));
-        } else if (signal.type === 'binary') {
-            waveStr = wavedromRunLength(signal.wave.map(v => v === null ? 'x' : String(v)));
-        } else if (signal.type === 'bus') {
-            let lastData = null;
-            for (const data of signal.data) {
-                if (data) {
-                    if (data !== lastData) {
-                        waveStr += '2';
-                        dataArr.push(data);
-                        lastData = data;
-                    } else {
-                        waveStr += '.';
-                    }
-                } else {
-                    waveStr += 'x';
-                    lastData = null;
-                }
-            }
-        }
-
-        const sig = { name: signal.name, wave: waveStr };
-        if (dataArr.length > 0) sig.data = dataArr;
-        return sig;
     }
 
     /**
@@ -1287,7 +1215,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 (s.data[0] || '0');
                 
             for (let t = 1; t < state.timeSteps; t++) {
-                let currentValue = (s.type === 'binary') ? 
+                const currentValue = (s.type === 'binary') ? 
                     (s.wave[t] !== null ? s.wave[t] : 0) : 
                     (s.data[t] || '0');
                     
@@ -1356,23 +1284,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         return tb;
-    }
-
-    /**
-     * SystemVerilog値をフォーマット
-     * 幅と値に応じて適切な形式に変換
-     */
-    function formatSvValue(value, width) {
-        if (width <= 1) return value;
-        
-        const valueStr = value.toString().toLowerCase();
-        if (valueStr.startsWith('0x')) {
-            return `${width}'h${valueStr.substring(2)}`;
-        } else if (valueStr.startsWith('0b')) {
-            return `${width}'b${valueStr.substring(2)}`;
-        } else {
-            return `${width}'d${valueStr}`;
-        }
     }
 
     // ========================================
